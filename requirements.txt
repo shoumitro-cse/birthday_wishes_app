@@ -1,7 +1,7 @@
-django
-djangorestframework
-celery
-psycopg2-binary
-django-decouple
-flower
-redis
+Django==4.2.4
+djangorestframework==3.14.0
+celery==5.3.3
+psycopg2-binary==2.9.7
+django-decouple==2.1
+flower==2.0.1
+redis==5.0.0
