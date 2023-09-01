@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -141,10 +141,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = "rpc://"
+CELERY_BEAT_SCHEDULE_FILENAME = 'celerybeat-schedule'
 CELERY_BEAT_SCHEDULE = {
     'send-birthday-emails': {
         'task': 'customers.tasks.send_birthday_emails',
-        'schedule': crontab(hour=23, minute=0),
+        'schedule': crontab(hour=7, minute=53),
     },
 }
 

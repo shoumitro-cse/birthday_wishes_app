@@ -10,6 +10,7 @@ from customers.models import Customer
 def send_birthday_emails():
     today = datetime.today()
     customers = Customer.objects.filter(birthdate__month=today.month, birthdate__day=today.day)
+    print(customers)
     for customer in customers:
         subject = f'🎉 Happy Birthday from {settings.PROJECT_NAME}! 🎂'
         from_email = settings.DEFAULT_FROM_EMAIL
@@ -20,6 +21,7 @@ def send_birthday_emails():
             'name': customer.name,
             'company_name': settings.PROJECT_NAME,
         })
+        print(html_content)
 
         # Send email
         msg = EmailMultiAlternatives(subject, '', from_email, [to_email])
