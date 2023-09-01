@@ -165,5 +165,5 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 
 # for project
-PROJECT_NAME = config("PROJECT_NAME")
+COMPANY_NAME = config("COMPANY_NAME")
 

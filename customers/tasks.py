@@ -9,16 +9,17 @@ from customers.models import Customer
 
 @shared_task
 def send_birthday_greetings_email():
-    customers = Customer.objects.filter(birthdate=datetime.today().date())
+
+    customers = Customer.objects.filter(birthdate=datetime.today().date()).values("email", "name")
     for customer in customers:
-        subject = f'🎉 Happy Birthday from {settings.PROJECT_NAME}! 🎂'
+        subject = f'🎉 Happy Birthday from {settings.COMPANY_NAME}! 🎂'
         from_email = settings.DEFAULT_FROM_EMAIL
-        to_email = customer.email
+        to_email = customer["email"]
 
         # Load and render the HTML template
         html_content = render_to_string('birthday_email_template.html', {
-            'name': customer.name,
-            'company_name': settings.PROJECT_NAME,
+            'name': customer["name"],
+            'company_name': settings.COMPANY_NAME,
         })
 
         print(html_content)
