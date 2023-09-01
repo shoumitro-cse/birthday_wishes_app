@@ -1,0 +1,91 @@
+version: "3"
+
+
+services:
+
+  birthday_reminder_api:
+    build: .
+    image: birthday_reminder_api
+    container_name: birthday_reminder_api
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    links:
+      - postgres_db
+      - redis
+      - rabbitmq
+    volumes:
+      - .:/src
+    command: sh -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py loaddata users.json &&
+      python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=postgres_db
+      - DB_NAME=birthday_reminder_db
+      - DB_USER=postgres
+      - DB_PASS=pg1234
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    hostname: postgres_db
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      - POSTGRES_DB=birthday_reminder_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pg1234
+    volumes:
+      - postgres_db_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  redis:
+    hostname: redis
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    hostname: rabbitmq
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=rb1234
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  celery_worker:
+    image: birthday_reminder_api:latest
+    hostname: celery_worker
+    container_name: celery_worker
+    volumes:
+      - .:/src
+    command: >
+      sh -c "celery -A birthday_reminder worker -B -l INFO"
+    depends_on:
+      - birthday_reminder_api
+      - rabbitmq
+
+  flower:
+    container_name: celery_flower
+    build: .
+    command: celery -A birthday_reminder flower --basic_auth=admin:ad1234 --port=5555
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=amqp://admin:rb1234@rabbitmq:5672/
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on:
+      - birthday_reminder_api
+      - rabbitmq
+      - celery_worker
+
+volumes:
+  postgres_db_data:
