@@ -148,8 +148,8 @@ CELERY_TASK_DEFAULT_QUEUE = "birthday_reminder_celery_queue"
 CELERY_BEAT_SCHEDULE = {
     'send_birthday_greetings_email': {
         'task': 'customers.tasks.send_birthday_greetings_email',
-        # 'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
-        'schedule': crontab(minute='*/1'),  # Schedule every 2 minutes
+        'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+        # 'schedule': crontab(minute='*/1'),  # Schedule every 1 minutes
     },
 }
 
