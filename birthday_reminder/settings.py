@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
 from celery.schedules import crontab
 from decouple import config
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n6ih78)r-91&ndtblq3^rwr=cqx%$tr339!ij$wv2svqwa$t0w'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'customers',
     'rest_framework',
+    'customers',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -130,6 +131,7 @@ STATICFILES_DIRS = (
 )
 STATIC_URL = 'static/'
 
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -140,14 +142,15 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = "rpc://"
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
 CELERY_BEAT_SCHEDULE_FILENAME = 'celerybeat-schedule'
 CELERY_BEAT_SCHEDULE = {
     'send-birthday-emails': {
         'task': 'customers.tasks.send_birthday_emails',
-        'schedule': crontab(hour=7, minute=53),
+        'schedule': crontab(hour=10, minute=0),
     },
 }
+
 
 # for email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -158,6 +161,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = config("EMAIL_PORT")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
+
 # for project
-PROJECT_NAME = 'Birthday Wishes App'
+PROJECT_NAME = config("PROJECT_NAME")
 
