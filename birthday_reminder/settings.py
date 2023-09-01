@@ -147,7 +147,7 @@ CELERY_BEAT_SCHEDULE_FILENAME = 'celerybeat-schedule'
 CELERY_BEAT_SCHEDULE = {
     'send-birthday-emails': {
         'task': 'customers.tasks.send_birthday_emails',
-        'schedule': crontab(hour=10, minute=0),
+        'schedule': crontab(hour=10, minute=33),
     },
 }
 
