@@ -8,9 +8,8 @@ from customers.models import Customer
 
 
 @shared_task
-def send_birthday_emails():
-    today = datetime.today()
-    customers = Customer.objects.filter(birthdate__month=today.month, birthdate__day=today.day)
+def send_birthday_greetings_email():
+    customers = Customer.objects.filter(birthdate=datetime.today().date())
     for customer in customers:
         subject = f'🎉 Happy Birthday from {settings.PROJECT_NAME}! 🎂'
         from_email = settings.DEFAULT_FROM_EMAIL
